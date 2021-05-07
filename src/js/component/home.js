@@ -1,75 +1,51 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
+import { Card, Container } from "react-bootstrap";
 
-function InputTask(/* { addTodo } */) {
-	const [value, setValue] = useState("");
+export const TodoList = () => {
+	const [userInput, setUserInput] = useState("");
+	const [task, setTask] = useState([]);
+	const [count, setCount] = useState(0);
 
-	const handleSubmit = e => {
-		e.preventDefault();
-		if (!value) return;
-		addTodo(value);
-		setValue("");
-	};
-
-	return (
-		<form onSubmit={handleSubmit}>
-			<input
-				type="text"
-				placeholder="what needs to be done?"
-				className="input"
-				value={value}
-				onChange={e => setValue(e.target.value)}
-			/>
-		</form>
-	);
-}
-
-function Todo(/* { todo, index, removeTodo } */) {
-	return (
-		<div
-			className="todo"
-			style={{ textDecoration: todo.isCompleted ? "line-through" : "" }}>
-			{todo.text}
-
-			<div>
-				<button onClick={() => removeTodo(index)}>x</button>
-			</div>
-		</div>
-	);
-}
-
-export function ToDoList() {
-	const [todos, setTodos] = useState([
-		{
-			text: "Learn about React",
-			isCompleted: false
+	const handleInfo = () => {
+		if (userInput != null) {
+			let newArray = [...task, userInput];
+			setTask(newArray);
+			setUserInput(" ");
+			setCount(count + 1);
 		}
-	]);
-
-	const addTodo = text => {
-		const newTodos = [...todos, { text }];
-		setTodos(newTodos);
 	};
 
-	const removeTodo = index => {
-		const newTodos = [...todos];
-		newTodos.splice(index, 1);
-		setTodos(newTodos);
+	const removeTask = id => {
+		task.splice(id, 1);
+		setTask([...task]);
+		setCount(count - 1);
 	};
 
 	return (
-		<div className="container">
-			<div className="">
-				<InputTask addTodo={addTodo} />
-				{todos.map((todo, index) => (
-					<Todo
-						key={index}
-						index={index}
-						todo={todo}
-						removeTodo={removeTodo}
-					/>
+		<Container>
+			<Card>
+				<Card.Title>
+					<span className="h1">Todo List</span>
+				</Card.Title>
+				<input
+					className="mb-2 inputClass"
+					placeholder="Add Task"
+					type="text"
+					requiered
+					value={userInput}
+					onChange={e => setUserInput(e.target.value)}
+					onKeyPress={e => (e.key === "Enter" ? handleInfo() : "")}
+				/>
+				{task.map((final, id) => (
+					<span className="card-subtitle mb-4 claseTask" key={id}>
+						{final}
+						<button onClick={() => removeTask(id)}>X</button>
+					</span>
 				))}
-			</div>
-		</div>
+				<p id="counter" className="">
+					{count} task's left
+				</p>
+			</Card>
+		</Container>
 	);
-}
+};
